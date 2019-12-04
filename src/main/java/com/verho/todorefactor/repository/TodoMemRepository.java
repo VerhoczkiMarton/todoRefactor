@@ -2,57 +2,77 @@ package com.verho.todorefactor.repository;
 
 import com.verho.todorefactor.model.Status;
 import com.verho.todorefactor.model.Todo;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TodoMemRepository {
+@Component
+@Qualifier("mem")
+public class TodoMemRepository implements TodoRepository {
 
-    private static final List<Todo> DATA = new ArrayList<>();
+    private final List<Todo> DATA = new ArrayList<>();
 
-    public static void add(Todo todo) {
+    public Todo save(Todo todo) {
         DATA.add(todo);
+        return todo;
     }
 
-    public static Todo find(String id) {
-        return DATA.stream().filter(t -> t.getId().equals(id)).findFirst().orElse(null);
+    @Override
+    public Todo saveAndFlush(Todo entity) {
+        save(entity);
+        return entity;
     }
 
-    public static void update(String id, String title) {
-        find(id).setTitle(title);
+    public Optional<Todo> findById(long id) {
+        return Optional.ofNullable(DATA.stream().filter(t -> t.getId().equals(id)).findFirst().orElse(null));
     }
 
-    public static List<Todo> ofStatus(String statusString) {
-        return (statusString == null || statusString.isEmpty()) ? DATA : ofStatus(Status.valueOf(statusString.toUpperCase()));
+    public void update(Long id, String title) {
+        findById(id).get().setTitle(title);
     }
 
-    public static List<Todo> ofStatus(Status status) {
+    public List<Todo> findAllByStatusString(String statusString) {
+        return (statusString == null || statusString.isEmpty()) ? DATA : findAllByStatus(Status.valueOf(statusString.toUpperCase()));
+    }
+
+    public List<Todo> findAllByStatus(Status status) {
         return DATA.stream().filter(t -> t.getStatus().equals(status)).collect(Collectors.toList());
     }
 
-    public static void remove(String id) {
-        DATA.remove(find(id));
+    public void removeById(Long id) {
+        DATA.remove(findById(id));
     }
 
-    public static void removeCompleted() {
-        ofStatus(Status.COMPLETE).forEach(t -> TodoMemRepository.remove(t.getId()));
+    @Override
+    public void setStatus(Long id, Status status) {
+        this.findById(id).get().setStatus(status);
     }
 
-    public static void toggleStatus(String id, boolean isComplete) {
-        Todo todo = find(id);
-        if (isComplete) {
-            todo.setStatus(Status.COMPLETE);
-        } else {
+    public void removeByStatus(Status status) {
+        findAllByStatus(Status.COMPLETE).forEach(t -> {
+            this.removeById(t.getId());
+        });
+    }
+
+    public void toggleStatus(Long id) {
+        Todo todo = findById(id).get();
+        if (todo.isCompleted()) {
             todo.setStatus(Status.ACTIVE);
+        } else {
+            todo.setStatus(Status.COMPLETE);
         }
     }
 
-    public static void toggleAll(boolean complete) {
-        TodoMemRepository.all().forEach(t -> t.setStatus(complete ? Status.COMPLETE : Status.ACTIVE));
+    public void toggleAll(boolean complete) {
+        this.findAll().forEach(t -> t.setStatus(complete ? Status.COMPLETE : Status.ACTIVE));
     }
 
-    public static List<Todo> all() {
+    public List<Todo> findAll() {
         return DATA;
     }
+
 }
