@@ -1,37 +1,27 @@
 package com.verho.todorefactor.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Builder
 public class Todo {
 
     private String title;
-    private String id;
+    private static Long _idCounter = 0L;
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Enumerated(EnumType.STRING)
     private Status status;
-    private static int _idCounter = 0;
-
-    private Todo(String title, String id, Status status) {
-        this.title = title;
-        this.id = id;
-        this.status = status;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
 
     public void setStatus(Status status) {
         this.status = status;
@@ -43,7 +33,7 @@ public class Todo {
 
     public static Todo create(String title) {
         _idCounter++;
-        return new Todo(title, String.valueOf(_idCounter), Status.ACTIVE);
+        return new Todo(title, _idCounter, Status.ACTIVE);
     }
 
 }
