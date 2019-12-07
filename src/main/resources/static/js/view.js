@@ -18,6 +18,13 @@ class View {
         this.$filterAll = document.getElementById("filter_");
         this.$filterActive = document.getElementById("filter_active");
         this.$filterComplete = document.getElementById("filter_complete");
+        this.$loginButton = document.querySelector("#login-button");
+    }
+
+    bindLogin(handler) {
+        this.$loginButton.addEventListener('click', ({target}) => {
+            handler(target);
+        })
     }
 
     bindFilterAll(handler) {

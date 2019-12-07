@@ -24,8 +24,34 @@ class Controller {
         view.bindFilterAll(this.updateState.bind(this));
         view.bindFilterActive(this.updateState.bind(this));
         view.bindFilterComplete(this.updateState.bind(this));
+        view.bindLogin(this.login.bind(this));
 
         this.updateState('');
+    }
+
+    login(target) {
+        const parent = target.parentElement;
+        const username = parent.querySelector("#username").value;
+        const password = parent.querySelector("#password").value;
+
+        let url = "http://localhost:8080/auth/signin";
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then((responseJson) => {
+                localStorage.setItem("token", responseJson.token);
+            });
     }
 
     updateState(newState) {
@@ -56,6 +82,7 @@ class Controller {
         if (method === Controller.POST || method === Controller.PUT) {
             req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         }
+        req.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
         req.send(params);
     }
 
