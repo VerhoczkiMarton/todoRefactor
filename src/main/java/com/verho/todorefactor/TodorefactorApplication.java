@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
@@ -44,6 +45,12 @@ public class TodorefactorApplication {
                             .username("admin")
                             .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("admin"))
                             .roles(roles)
+                            .build());
+            userRepository.saveAndFlush(
+                    User.builder()
+                            .username("user")
+                            .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("user"))
+                            .roles(Collections.singletonList("USER"))
                             .build());
         };
     }
