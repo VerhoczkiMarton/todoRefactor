@@ -21,7 +21,7 @@ mvn spring-boot:run
 👤 **Verhóczki Márton**
 
 * Github: [@VerhoczkiMarton](https://github.com/VerhoczkiMarton)
-* LinkedIn: [@Verhóczki Márton](https://linkedin.com/in/Verhóczki Márton)
+* LinkedIn: [@VerhoczkiMarton](https://linkedin.com/in/VerhoczkiMarton)
 
 ## Show your support
 
