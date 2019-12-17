@@ -2,6 +2,7 @@ package com.verho.todorefactor.controller;
 
 import com.verho.todorefactor.model.UserCredentials;
 import com.verho.todorefactor.security.JwtService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,16 +22,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
+@AllArgsConstructor
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
     private final JwtService jwtService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-    }
 
     @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody UserCredentials data) {
