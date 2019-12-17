@@ -13,9 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 @SpringBootApplication
 public class TodorefactorApplication {
@@ -34,9 +32,6 @@ public class TodorefactorApplication {
     @Bean
     public CommandLineRunner init() {
         return args -> {
-            List<String> roles = new ArrayList<>();
-            roles.add("ADMIN");
-            roles.add("USER");
 
             todoRepository.saveAndFlush(Todo.builder().status(Status.ACTIVE).title("test").build());
 
@@ -44,13 +39,13 @@ public class TodorefactorApplication {
                     User.builder()
                             .username("admin")
                             .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("admin"))
-                            .roles(roles)
+                            .roles(Collections.singletonList("ROLE_ADMIN"))
                             .build());
             userRepository.saveAndFlush(
                     User.builder()
                             .username("user")
                             .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("user"))
-                            .roles(Collections.singletonList("USER"))
+                            .roles(Collections.singletonList("ROLE_USER"))
                             .build());
         };
     }
